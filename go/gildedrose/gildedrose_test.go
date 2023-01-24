@@ -4,6 +4,20 @@ import (
 	"testing"
 )
 
+/***
+Rithu handoff notes:
+	- The original gildedrose package import was giving me issues,
+		so I changed the package name to use the Item defined locally
+		(hopefully this is okay since I didn't modify Item).
+	- With more time, I would've liked to split out the test into different fns
+		to correspond to the new update fns but hopefully at least the grouping with
+		'name' should provide some extra clarity. For example, failing tests should be
+		prefixed with grouping name:
+			--- FAIL: TestUpdateQuality/Conjured#01 (0.00s)
+        				gildedrose_test.go:83: SellIn: Expected -1 but got 0
+        				gildedrose_test.go:86: Quality: Expected 6 but got 0
+***/
+
 func TestUpdateQuality(t *testing.T) {
 	var tests = []struct {
 		name  string

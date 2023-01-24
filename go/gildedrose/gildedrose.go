@@ -1,5 +1,13 @@
 package gildedrose
 
+/***
+Rithu handoff notes:
+	- Added consts for set strings and values.
+	- Broke off updates into separate fns based on special behaviour for different items.
+	- With more time, I would've liked to create a separate interface for the items so that
+		special items can implement their own update methods.
+***/
+
 type Item struct {
 	Name            string
 	SellIn, Quality int
