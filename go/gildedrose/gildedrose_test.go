@@ -4,19 +4,7 @@ import (
 	"testing"
 )
 
-/*
-- Once the sell by date has passed, Quality degrades twice as fast - DONE
-- The Quality of an item is never negative - DONE
-- "Aged Brie" actually increases in Quality the older it gets - DONE
-- The Quality of an item is never more than 50 - DONE
-- "Sulfuras", being a legendary item, never has to be sold or decreases in Quality - DONE
-- "Backstage passes", like aged brie, increases in Quality as its SellIn value approaches;
- 			- Quality increases by 2 when there are 10 days or less and
-			- by 3 when there are 5 days or less but
-			- Quality drops to 0 after the concert
-*/
-
-func Test_Foo(t *testing.T) {
+func TestUpdateQuality(t *testing.T) {
 	var tests = []struct {
 		name  string
 		input []*Item
@@ -24,47 +12,55 @@ func Test_Foo(t *testing.T) {
 	}{
 		{"Normal items",
 			[]*Item{{"Standard", 5, 50},
-				{"Past Sell Date", -1, 50},
-				{"Quality Zero", 7, 0}},
+				{"Past Sell Date", -1, 50}, // Quality decreases twice as fast
+				{"Quality Zero", 7, 0},     // Quality doesn't go below 0
+				{"Quality Zero, Past Sell Date", -3, 0}}, // Quality doesn't go below 0
 			[]*Item{{"Standard", 4, 49},
 				{"Past Sell Date", -2, 48},
-				{"Quality Zero", 6, 0}}},
+				{"Quality Zero", 6, 0},
+				{"Quality Zero, Past Sell Date", -4, 0}}},
 
 		{"Aged Brie",
-			[]*Item{{"Aged Brie", 7, 30},
-				{"Aged Brie", 7, 50},
-				{"Aged Brie", -5, 10}},
+			[]*Item{{"Aged Brie", 7, 30}, // Quality increases
+				{"Aged Brie", 7, 50}, // Increase doesn't go over 50
+				{"Aged Brie", -5, 10}}, // Quality increases twice as fast past sell date
 			[]*Item{{"Aged Brie", 6, 31},
 				{"Aged Brie", 6, 50},
 				{"Aged Brie", -6, 12}}},
 
 		{"Sulfuras",
-			[]*Item{{"Sulfuras, Hand of Ragnaros", 7, 80},
+			[]*Item{{"Sulfuras, Hand of Ragnaros", 7, 80}, // Expect no change
 				{"Sulfuras, Hand of Ragnaros", -10, 80}},
-			[]*Item{{"Sulfuras, Hand of Ragnaros", 7, 80},
+			[]*Item{{"Sulfuras, Hand of Ragnaros", 7, 80}, // Expect no change
 				{"Sulfuras, Hand of Ragnaros", -10, 80}}},
 
 		{"Backstage passes",
-			[]*Item{{"Backstage passes to a TAFKAL80ETC concert", 15, 10},
-				{"Backstage passes to a TAFKAL80ETC concert", 10, 10},
-				{"Backstage passes to a TAFKAL80ETC concert", 7, 10},
-				{"Backstage passes to a TAFKAL80ETC concert", 5, 10},
-				{"Backstage passes to a TAFKAL80ETC concert", 3, 10},
-				{"Backstage passes to a TAFKAL80ETC concert", 1, 10},
-				{"Backstage passes to a TAFKAL80ETC concert", -1, 50}},
+			[]*Item{{"Backstage passes to a TAFKAL80ETC concert", 15, 10}, // Quality increases
+				{"Backstage passes to a TAFKAL80ETC concert", 10, 10}, // Quality increases twice as fast
+				{"Backstage passes to a TAFKAL80ETC concert", 7, 10},  // Quality increases twice as fast
+				{"Backstage passes to a TAFKAL80ETC concert", 5, 10},  // Quality increases thrice as fast
+				{"Backstage passes to a TAFKAL80ETC concert", 3, 10},  // Quality increases thrice as fast
+				{"Backstage passes to a TAFKAL80ETC concert", 1, 10},  // Quality increases thrice as fast
+				{"Backstage passes to a TAFKAL80ETC concert", -1, 40}, // Quality is 0
+				{"Backstage passes to a TAFKAL80ETC concert", 0, 30},  // Quality is 0
+				{"Backstage passes to a TAFKAL80ETC concert", -1, 0}}, // Quality doesn't go below 0
 			[]*Item{{"Backstage passes to a TAFKAL80ETC concert", 14, 11},
 				{"Backstage passes to a TAFKAL80ETC concert", 9, 12},
 				{"Backstage passes to a TAFKAL80ETC concert", 6, 12},
 				{"Backstage passes to a TAFKAL80ETC concert", 4, 13},
 				{"Backstage passes to a TAFKAL80ETC concert", 2, 13},
 				{"Backstage passes to a TAFKAL80ETC concert", 0, 13},
+				{"Backstage passes to a TAFKAL80ETC concert", -2, 0},
+				{"Backstage passes to a TAFKAL80ETC concert", -1, 0},
 				{"Backstage passes to a TAFKAL80ETC concert", -2, 0}}},
 
 		{"Conjured",
-			[]*Item{{"Conjured", 5, 50},
-				{"Conjured", 1, 0}},
+			[]*Item{{"Conjured", 5, 50}, // Quality decreases twice as fast
+				{"Conjured", 1, 0}, // Quality doesn't go below 0
+				{"Conjured", 0, 10}}, // Quality decreases twice as fast x 2
 			[]*Item{{"Conjured", 4, 48},
-				{"Conjured", 0, 0}}},
+				{"Conjured", 0, 0},
+				{"Conjured", -1, 6}}},
 	}
 
 	for _, test := range tests {
