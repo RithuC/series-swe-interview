@@ -16,46 +16,6 @@ import (
 			- Quality drops to 0 after the concert
 */
 
-//var items = []*Item{
-//	{"Standard", 5, 50},
-//	{"Past Sell Date", -1, 50},
-//	{"Quality Zero", 7, 0},
-//	{"Aged Brie", 7, 30},
-//	{"Aged Brie", 7, 50},                                  // Can't go over 50 Quality
-//	{"Aged Brie", -5, 10},                                 // Past sell date quality increase double
-//	{"Sulfuras, Hand of Ragnaros", 7, 80},                 // Doesn't change
-//	{"Sulfuras, Hand of Ragnaros", -10, 80},               // Doesn't change
-//	{"Backstage passes to a TAFKAL80ETC concert", 15, 10}, // Normal quality decrease
-//	{"Backstage passes to a BTS concert", 10, 10},         // Double quality increase
-//	{"Backstage passes to a DPR concert", 7, 10},          // Double quality increase
-//	{"Backstage passes to a DEAN concert", 5, 10},         // Triple quality increase
-//	{"Backstage passes to a Mitski concert", 3, 10},       // Triple quality increase
-//	{"Backstage passes to a Tabber concert", 1, 10},       // Triple quality increase
-//	{"Backstage passes to the Lumineers concert", -1, 50}, // Zero Quality
-//	{"Conjured", 5, 50},
-//	{"Conjured", 1, 0},
-//}
-
-//var expected = []*Item{
-//	{"Standard", 4, 49},
-//	{"Past Sell Date", -2, 48},
-//	{"Quality Zero", 6, 0},
-//	{"Aged Brie", 6, 31},
-//	{"Aged Brie", 6, 50},                                  // Can't go over 50 Quality
-//	{"Aged Brie", -6, 12},                                 // Past sell date quality increase double
-//	{"Sulfuras, Hand of Ragnaros", 7, 80},                 // Doesn't change
-//	{"Sulfuras, Hand of Ragnaros", -10, 80},               // Doesn't change
-//	{"Backstage passes to a TAFKAL80ETC concert", 14, 11}, // Normal quality decrease
-//	{"Backstage passes to a BTS concert", 9, 12},          // Double quality increase
-//	{"Backstage passes to a DPR concert", 6, 12},          // Double quality increase
-//	{"Backstage passes to a DEAN concert", 4, 13},         // Triple quality increase
-//	{"Backstage passes to a Mitski concert", 2, 13},       // Triple quality increase
-//	{"Backstage passes to a Tabber concert", 0, 13},       // Triple quality increase
-//	{"Backstage passes to the Lumineers concert", -2, 0},  // Zero Quality
-//	{"Conjured", 4, 48},
-//	{"Conjured", 0, 0},
-//}
-
 func Test_Foo(t *testing.T) {
 	var tests = []struct {
 		name  string
@@ -106,18 +66,6 @@ func Test_Foo(t *testing.T) {
 			[]*Item{{"Conjured", 4, 48},
 				{"Conjured", 0, 0}}},
 	}
-
-	//for i := 0; i < len(items); i++ {
-	//	if items[i].Name != expected[i].Name {
-	//		t.Errorf("Name: Expected %s but got %s ", expected[i].Name, items[i].Name)
-	//	}
-	//	if items[i].SellIn != expected[i].SellIn {
-	//		t.Errorf("Name: Expected %d but got %d ", expected[i].SellIn, items[i].SellIn)
-	//	}
-	//	if items[i].Quality != expected[i].Quality {
-	//		t.Errorf("Name: Expected %d but got %d ", expected[i].Quality, items[i].Quality)
-	//	}
-	//}
 
 	for _, test := range tests {
 		UpdateQuality(test.input)

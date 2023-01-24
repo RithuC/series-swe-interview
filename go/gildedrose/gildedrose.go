@@ -16,15 +16,8 @@ const (
 	MaxQuality          int = 50
 	MinQuality          int = 0
 	MaxQualityLegendary int = 80
+	MinSellIn           int = 0
 )
-
-func isSpecialProduct(name string) bool {
-	switch name {
-	case AgedBrie, Sulfuras, BackstagePasses, Conjured:
-		return true
-	}
-	return false
-}
 
 func UpdateQuality(items []*Item) {
 	for _, item := range items {
@@ -33,74 +26,30 @@ func UpdateQuality(items []*Item) {
 		if item.Name == Sulfuras {
 			continue
 		}
-		//} else if !isSpecialProduct(item.Name) {
-		//	if item.Quality > MinQuality {
-		//		item.Quality--
-		//	}
-		//}
-		//
-		//if item.Name == Conjured && item.Quality > MinQuality {
-		//	item.Quality = item.Quality - 2
-		//}
-		//
-		//if item.Name == AgedBrie || item.Name == BackstagePasses {
-		//	if item.Quality < 50 {
-		//		item.Quality = item.Quality + 1
-		//		if item.Name == BackstagePasses {
-		//			if item.SellIn < 11 {
-		//				if item.Quality < 50 {
-		//					item.Quality = item.Quality + 1
-		//				}
-		//			}
-		//			if item.SellIn < 6 {
-		//				if item.Quality < 50 {
-		//					item.Quality = item.Quality + 1
-		//				}
-		//			}
-		//		}
-		//	}
-		//}
 
-		if item.Name != AgedBrie && item.Name != BackstagePasses {
-			if item.Quality > 0 {
-				item.Quality = item.Quality - 1
-				if item.Name == Conjured {
-					item.Quality = item.Quality - 1
-				}
-			}
-		} else {
-			if item.Quality < 50 {
-				item.Quality = item.Quality + 1
-				if item.Name == BackstagePasses {
-					if item.SellIn < 11 {
-						if item.Quality < 50 {
-							item.Quality = item.Quality + 1
-						}
-					}
-					if item.SellIn < 6 {
-						if item.Quality < 50 {
-							item.Quality = item.Quality + 1
-						}
-					}
-				}
-			}
+		switch item.Name {
+		case Conjured:
+			updateQualityConjured(item)
+		case AgedBrie:
+			updateQualityBrie(item)
+		case BackstagePasses:
+			updateQualityBackstagePasses(item)
+		default:
+			updateQuality(item)
 		}
 
-		item.SellIn--
+		updateSellIn(item)
 
-		if item.SellIn < 0 {
-			if item.Name != AgedBrie {
-				if item.Name != BackstagePasses {
-					if item.Quality > 0 {
-						item.Quality = item.Quality - 1
-					}
-				} else {
-					item.Quality = item.Quality - item.Quality
-				}
-			} else {
-				if item.Quality < 50 {
-					item.Quality = item.Quality + 1
-				}
+		if item.SellIn < MinSellIn {
+			switch item.Name {
+			case Conjured:
+				updateQualityConjured(item)
+			case AgedBrie:
+				updateQualityBrie(item)
+			case BackstagePasses:
+				updateQualityBackstagePasses(item)
+			default:
+				updateQuality(item)
 			}
 		}
 	}
@@ -108,4 +57,36 @@ func UpdateQuality(items []*Item) {
 
 func updateSellIn(item *Item) {
 	item.SellIn--
+}
+
+func updateQuality(item *Item) {
+	if item.Quality > MinQuality {
+		item.Quality--
+	}
+}
+
+func updateQualityConjured(item *Item) {
+	if item.Quality > MinQuality {
+		item.Quality -= 2
+	}
+}
+
+func updateQualityBrie(item *Item) {
+	if item.Quality < MaxQuality {
+		item.Quality++
+	}
+}
+
+func updateQualityBackstagePasses(item *Item) {
+	if item.SellIn < MinSellIn {
+		item.Quality = MinQuality
+	} else if item.Quality < MaxQuality {
+		if item.SellIn < 11 {
+			item.Quality++
+		}
+		if item.SellIn < 6 {
+			item.Quality++
+		}
+		item.Quality++
+	}
 }
